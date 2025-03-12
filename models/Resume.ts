@@ -1,5 +1,6 @@
 import mongoose, { Document, Model, Schema } from 'mongoose'
 import { IUser } from './User'
+import { CheckIcon } from '@heroicons/react/20/solid'
 
 // Define interfaces for resume sections
 interface IEducation {
