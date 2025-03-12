@@ -4,6 +4,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import bcrypt from 'bcryptjs'
 import connectToDatabase from '@/lib/mongodb'
 import User from '@/models/User'
+import { IUser } from '@/models/User'
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -21,7 +22,7 @@ export const authOptions: NextAuthOptions = {
         await connectToDatabase()
 
         // Find user by email
-        const user = await User.findOne({ email: credentials.email }).select('+password')
+        const user: IUser | null = await User.findOne({ email: credentials.email }).select('+password')
 
         if (!user) {
           throw new Error('No user found with this email')
