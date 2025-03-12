@@ -28,6 +28,10 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Check if password matches
+        if (!credentials?.password || !user?.password) {
+          throw new Error('Password is missing')
+        }
+
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
 
         if (!isPasswordValid) {
