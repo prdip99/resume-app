@@ -21,6 +21,7 @@ export interface IUser extends Document {
   phoneVerified: boolean;
   lastLogin?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
+  _id: mongoose.Types.ObjectId;
 }
 
 // Define the User schema
