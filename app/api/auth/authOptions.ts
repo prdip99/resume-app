@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import connectToDatabase from '@/lib/mongodb'
 import User from '@/models/User'
 import { IUser } from '@/models/User'
+import { Account, Profile } from 'next-auth'
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -66,47 +67,42 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.role = user.role
-        token.subscription = user.subscription
+        const typedUser = user as IUser;
+        token.id = typedUser.id;
+        token.role = typedUser.role;
+        token.subscription = typedUser.subscription;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-        session.user.subscription = token.subscription as string
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+        session.user.subscription = token.subscription as string;
       }
-      return session
+      return session;
     },
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account, profile }: { user: any; account: Account | null; profile?: Profile | undefined }) {
       if (account?.provider === 'google') {
         try {
-          await connectToDatabase()
-          
-          // Check if user exists
-          const existingUser = await User.findOne({ email: user.email })
-          
+          await connectToDatabase();
+          const existingUser = await User.findOne({ email: user.email });
           if (!existingUser) {
-            // Create new user
             await User.create({
               name: user.name,
               email: user.email,
               image: user.image,
               role: 'user',
               subscription: 'free'
-            })
+            });
           }
-          
-          return true
+          return true;
         } catch (error) {
-          console.error('Error during Google sign in:', error)
-          return false
+          console.error('Error during Google sign in:', error);
+          return false;
         }
       }
-      
-      return true
+      return true;
     }
   },
   pages: {
