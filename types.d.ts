@@ -38,4 +38,9 @@ declare namespace NodeJS {
   }
 }
 
+// Heroicons types
+declare module '@heroicons/react/20/solid' {
+  export const CheckIcon: any;
+}
+
 export {}; 
